@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>학습 현황</title>
+<style>
+:root{
+  --bg:#ffffff;
+  --bg-alt:#f6f6f6;
+  --fg:#111111;
+  --muted:#6b6b6b;
+  --border:#e2e2e2;
+  --border-strong:#111111;
+  --radius:10px;
+  --maxw:760px;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --bg:#0a0a0a;
+    --bg-alt:#151515;
+    --fg:#f2f2f2;
+    --muted:#9a9a9a;
+    --border:#2b2b2b;
+    --border-strong:#f2f2f2;
+  }
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--fg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo",sans-serif;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:var(--maxw);margin:0 auto;padding:56px 20px 80px;}
+
+.hero{margin-bottom:56px;}
+.eyebrow{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;}
+.hero h1{font-size:32px;margin:0 0 10px;letter-spacing:-0.02em;}
+.meta{color:var(--muted);font-size:14px;margin:0;}
+
+.section{margin-bottom:64px;}
+.section h2{font-size:20px;margin:0 0 20px;padding-bottom:10px;border-bottom:2px solid var(--border-strong);}
+.section h3{font-size:16px;margin:24px 0 10px;}
+
+.legend{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:20px;font-size:13px;color:var(--muted);}
+.legend-sm{font-size:12px;margin-bottom:14px;}
+.legend-item{display:flex;align-items:center;gap:6px;}
+
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;flex:none;}
+.dot.done{background:var(--fg);border:2px solid var(--fg);}
+.dot.progress{background:linear-gradient(90deg,var(--fg) 50%,transparent 50%);border:2px solid var(--fg);}
+.dot.unclear{width:0;height:0;border-radius:0;background:transparent;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:9px solid var(--fg);border-top:none;}
+.dot.none{background:transparent;border:2px dotted var(--muted);opacity:.6;}
+
+.card-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+.card{border:1px solid var(--border);border-radius:var(--radius);padding:18px;}
+.card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.card-title{display:flex;align-items:center;gap:10px;}
+.card-title h3{margin:0;font-size:16px;}
+.card p{margin:0;color:var(--muted);font-size:14px;}
+
+.initial{width:34px;height:34px;border:1.5px solid var(--fg);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;flex:none;}
+
+.badge{font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid var(--border-strong);white-space:nowrap;}
+.badge.done{background:var(--fg);color:var(--bg);}
+.badge.progress{background:transparent;color:var(--fg);}
+.badge.unclear{background:transparent;color:var(--fg);border-style:dashed;}
+.badge.none{background:transparent;color:var(--muted);border-color:var(--border);border-style:dotted;}
+
+.timeline{list-style:none;margin:0;padding:0;position:relative;}
+.timeline::before{content:"";position:absolute;left:5px;top:6px;bottom:6px;width:2px;background:var(--border);}
+.timeline li{position:relative;padding:0 0 28px 28px;}
+.timeline li:last-child{padding-bottom:0;}
+.timeline li.compact{padding-bottom:18px;}
+.timeline .node{position:absolute;left:0;top:4px;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--border);}
+.timeline li.past .node{background:var(--fg);border-color:var(--fg);}
+.timeline li.now .node{border-color:var(--fg);box-shadow:0 0 0 4px var(--bg),0 0 0 6px var(--fg);}
+.timeline li.now .label{font-weight:700;}
+.timeline li.future .label{color:var(--muted);font-weight:400;}
+.timeline .label{font-weight:600;}
+.timeline .sub{color:var(--muted);font-size:13px;margin-top:2px;}
+.timeline .period{font-weight:400;color:var(--muted);font-size:13px;margin-left:6px;}
+.timeline-detail{list-style:none;margin:8px 0 0;padding:0;}
+.timeline-detail li{position:relative;padding-left:14px;color:var(--muted);font-size:13.5px;margin-bottom:5px;line-height:1.55;}
+.timeline-detail li::before{content:"–";position:absolute;left:0;opacity:.5;}
+
+.subject{margin-bottom:40px;padding-bottom:36px;border-bottom:1px solid var(--border);}
+.subject:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.subject-head{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.subject-head h3{margin:0;font-size:18px;}
+.subject h4{font-size:13px;margin:18px 0 8px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em;}
+.subject h4:first-of-type{margin-top:0;}
+.subject-note{color:var(--muted);font-size:14px;margin:8px 0 0;}
+
+.table-wrap{overflow-x:auto;}
+table.grid{border-collapse:collapse;width:100%;font-size:14px;margin-top:4px;min-width:400px;}
+table.grid th,table.grid td{border:1px solid var(--border);padding:8px 10px;text-align:center;}
+table.grid th{background:var(--bg-alt);font-weight:600;font-size:13px;}
+table.grid td:first-child,table.grid th:first-child{text-align:left;font-weight:500;}
+
+.tag-list{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.tag{font-size:13px;border:1px solid var(--border);border-radius:8px;padding:6px 10px;display:flex;gap:6px;align-items:center;}
+
+ul.plain,ol.plain{margin:0;padding-left:1.2em;}
+ul.plain li,ol.plain li{margin-bottom:8px;}
+
+.callout{background:var(--bg-alt);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;}
+.callout ul{margin:0;padding-left:1.1em;}
+.callout li{margin-bottom:8px;}
+
+dl.glossary dt{font-weight:600;margin-top:14px;}
+dl.glossary dt:first-child{margin-top:0;}
+dl.glossary dd{margin:4px 0 0;color:var(--muted);font-size:14px;}
+
+footer{color:var(--muted);font-size:12px;text-align:center;margin-top:40px;}
+
+@media (max-width:520px){
+  .card-grid{grid-template-columns:1fr;}
+}
+@media (max-width:480px){
+  .page{padding:40px 16px 60px;}
+  .hero h1{font-size:26px;}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="hero">
+    <p class="eyebrow">2026 여름방학 전</p>
+    <h1>학습 현황</h1>
+    <p class="meta">기준일 2026. 07. 08 · 중2</p>
+  </header>
+
+  <section class="section" id="summary">
+    <h2>한눈에 보기</h2>
+    <div class="legend">
+      <span class="legend-item"><span class="dot done" role="img" aria-label="완료"></span>완료</span>
+      <span class="legend-item"><span class="dot progress" role="img" aria-label="진행중"></span>진행중</span>
+      <span class="legend-item"><span class="dot unclear" role="img" aria-label="애매함"></span>애매함</span>
+      <span class="legend-item"><span class="dot none" role="img" aria-label="미시작"></span>미시작</span>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="initial">국</span><h3>국어</h3></div>
+          <span class="badge progress">진행중</span>
+        </div>
+        <p>비문학 추론·근거 찾기가 약점. 고2 지문 학습 예정.</p>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="initial">수</span><h3>수학</h3></div>
+          <span class="badge progress">진행중</span>
+        </div>
+        <p>공수1 실전개념 시작 단계, 대수·미적분1은 응용까지 이수.</p>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="initial">영</span><h3>영어</h3></div>
+          <span class="badge progress">진행중</span>
+        </div>
+        <p>단어·문법 선행 필요, 복습 체계 부족이 약점.</p>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title"><span class="initial">과</span><h3>과학</h3></div>
+          <span class="badge unclear">애매함</span>
+        </div>
+        <p>물리1 역학만 기본 수준, 나머지 7과목은 아직.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="timeline">
+    <h2>지금 어디쯤인지</h2>
+    <ol class="timeline">
+      <li class="past">
+        <span class="node"></span>
+        <div class="label">겨울방학<span class="period">작년 12월 ~ 올해 2월</span></div>
+        <ul class="timeline-detail">
+          <li>(직전 여름방학) 물리1 다원 남병욱 특강 — 일본여행 등으로 완주 못 함</li>
+          <li>처음으로 혼자 공부 시작</li>
+          <li>개념플러스유형 미적분1 → 별로여서 중단, 미적분1 개념·공수2 심화로 전환</li>
+          <li>현우진T 미적분 인강 완주</li>
+          <li>국어 독해 — 이원준T RNP 시작</li>
+          <li>문학 개념(기본 + 운문) 조금 학습</li>
+          <li>미적분2 기본개념 — 강연찬T Turn on 시작</li>
+          <li>대수 실전개념 — 강연찬T Vision 시작</li>
+          <li>공수1 심화 완주 — 예상보다 어려워 계획대로 못 감</li>
+        </ul>
+      </li>
+      <li class="past">
+        <span class="node"></span>
+        <div class="label">학기중<span class="period">1학기 초</span></div>
+        <ul class="timeline-detail">
+          <li>대수 실전개념 Vision 완료</li>
+          <li>미적분2 기본개념 Turn on — 역함수 미분까지 (진도 느리게)</li>
+          <li>물리1 개념 학습 — 아직 이해가 잘 안 됨</li>
+        </ul>
+      </li>
+      <li class="past compact">
+        <span class="node"></span>
+        <div class="label">1학기 중간고사</div>
+      </li>
+      <li class="past">
+        <span class="node"></span>
+        <div class="label">학기중<span class="period">중간고사 ~ 기말고사 사이</span></div>
+        <ul class="timeline-detail">
+          <li>학원 다시 등원, 공수1·미적분1 진행</li>
+          <li>미적분1 너무 답답함, 실전개념은 아직 못 함</li>
+          <li>공수는 앞부분만 진도 나감</li>
+        </ul>
+      </li>
+      <li class="past compact">
+        <span class="node"></span>
+        <div class="label">1학기 기말고사<span class="period">얼마 전</span></div>
+      </li>
+      <li class="now">
+        <span class="node"></span>
+        <div class="label">학기중<span class="period">지금 · 7월 8일</span></div>
+        <ul class="timeline-detail">
+          <li>생기부 작성 시기 — 독서감상문 제출 중요</li>
+          <li>공수1 실전개념부터 다시 시작</li>
+          <li>~7/24까지 마무리 목표로 진행 중</li>
+        </ul>
+      </li>
+      <li class="future">
+        <span class="node"></span>
+        <div class="label">여름방학<span class="period">7/24~ 예정</span></div>
+        <ul class="timeline-detail">
+          <li>여름방학 특강 — 공수1·2 심화, 영문법 총정리</li>
+        </ul>
+      </li>
+      <li class="future compact">
+        <span class="node"></span>
+        <div class="label">학기중</div>
+      </li>
+      <li class="future compact">
+        <span class="node"></span>
+        <div class="label">2학기 중간고사</div>
+      </li>
+      <li class="future compact">
+        <span class="node"></span>
+        <div class="label">학기중</div>
+      </li>
+      <li class="future compact">
+        <span class="node"></span>
+        <div class="label">2학기 기말고사</div>
+      </li>
+      <li class="future compact">
+        <span class="node"></span>
+        <div class="label">학기중</div>
+      </li>
+    </ol>
+  </section>
+
+  <section class="section" id="detail">
+    <h2>과목별 상세 현황</h2>
+
+    <article class="subject">
+      <div class="subject-head"><span class="initial">국</span><h3>국어</h3></div>
+
+      <h4>독해</h4>
+      <div class="tag-list">
+        <span class="tag"><span class="dot progress" role="img" aria-label="진행중"></span>이원준 RNP 진행 중</span>
+        <span class="tag"><span class="dot none" role="img" aria-label="미시작"></span>고2 지문 학습 예정</span>
+      </div>
+      <p class="subject-note">비문학 지문에서 추론·근거 찾기가 약점으로 확인됨.</p>
+
+      <h4>문학</h4>
+      <div class="tag-list">
+        <span class="tag"><span class="dot unclear" role="img" aria-label="애매함"></span>기본 + 운문 문학만 진행</span>
+      </div>
+
+      <h4>문법</h4>
+      <div class="tag-list">
+        <span class="tag"><span class="dot none" role="img" aria-label="미시작"></span>미시작</span>
+      </div>
+    </article>
+
+    <article class="subject">
+      <div class="subject-head"><span class="initial">수</span><h3>수학</h3></div>
+
+      <h4>기본개념 이수 현황</h4>
+      <div class="legend legend-sm">
+        <span class="legend-item"><span class="dot done" role="img" aria-label="완료"></span>완료</span>
+        <span class="legend-item"><span class="dot progress" role="img" aria-label="진행중"></span>진행중</span>
+        <span class="legend-item"><span class="dot unclear" role="img" aria-label="애매함"></span>애매함</span>
+        <span class="legend-item"><span class="dot none" role="img" aria-label="미시작"></span>미시작</span>
+      </div>
+      <div class="table-wrap">
+        <table class="grid">
+          <thead><tr><th>과목</th><th>기본</th><th>응용</th><th>심화</th></tr></thead>
+          <tbody>
+            <tr><td>공통수학1</td><td><span class="dot done" role="img" aria-label="완료"></span></td><td><span class="dot done" role="img" aria-label="완료"></span></td><td><span class="dot unclear" role="img" aria-label="애매함"></span></td></tr>
+            <tr><td>공통수학2</td><td><span class="dot done" role="img" aria-label="완료"></span></td><td><span class="dot unclear" role="img" aria-label="애매함"></span></td><td><span class="dot none" role="img" aria-label="미시작"></span></td></tr>
+            <tr><td>대수</td><td><span class="dot done" role="img" aria-label="완료"></span></td><td><span class="dot done" role="img" aria-label="완료"></span></td><td><span class="dot none" role="img" aria-label="미시작"></span></td></tr>
+            <tr><td>미적분1</td><td><span class="dot done" role="img" aria-label="완료"></span></td><td><span class="dot done" role="img" aria-label="완료"></span></td><td><span class="dot none" role="img" aria-label="미시작"></span></td></tr>
+            <tr><td>미적분2</td><td><span class="dot unclear" role="img" aria-label="애매함"></span></td><td><span class="dot none" role="img" aria-label="미시작"></span></td><td><span class="dot none" role="img" aria-label="미시작"></span></td></tr>
+            <tr><td>기하</td><td><span class="dot none" role="img" aria-label="미시작"></span></td><td><span class="dot none" role="img" aria-label="미시작"></span></td><td><span class="dot none" role="img" aria-label="미시작"></span></td></tr>
+            <tr><td>확률과통계</td><td><span class="dot none" role="img" aria-label="미시작"></span></td><td><span class="dot none" role="img" aria-label="미시작"></span></td><td><span class="dot none" role="img" aria-label="미시작"></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="subject-note">확률과통계(확통)는 내신 선택과 별개로 수능 필수 과목.</p>
+
+      <h4>실전개념 진행 현황</h4>
+      <div class="tag-list">
+        <span class="tag"><span class="dot progress" role="img" aria-label="진행중"></span>공통수학1 · 시작 단계</span>
+        <span class="tag"><span class="dot none" role="img" aria-label="미시작"></span>공통수학2</span>
+        <span class="tag"><span class="dot done" role="img" aria-label="완료"></span>대수 · Vision 완료</span>
+        <span class="tag"><span class="dot progress" role="img" aria-label="진행중"></span>미적분1 · 7/24 완료 목표</span>
+        <span class="tag"><span class="dot none" role="img" aria-label="미시작"></span>미적분2</span>
+        <span class="tag"><span class="dot none" role="img" aria-label="미시작"></span>기하</span>
+        <span class="tag"><span class="dot none" role="img" aria-label="미시작"></span>확률과통계</span>
+      </div>
+
+      <p class="subject-note">중2-2 과정(도형의 닮음, 경우의 수 등)은 공통수학2와 자연스럽게 이어지지만, 원의 방정식·명제처럼 중학 과정에 없는 개념도 있어 새로 익히는 시간이 필요함.</p>
+    </article>
+
+    <article class="subject">
+      <div class="subject-head"><span class="initial">영</span><h3>영어</h3></div>
+
+      <h4>단어</h4>
+      <p class="subject-note">학원에서 진행하지만 복습 체계가 없어 암기해도 금방 잊어버림. 여름방학 전까지 수능 영단어 완료가 목표.</p>
+
+      <h4>독해</h4>
+      <p class="subject-note">학원은 지문 전체를 읽고 문제를 푸는 방식, 인강은 문장 단위로 정독하는 방식 — 두 방식을 함께 접하는 중. 고2 모의고사로 현재 수준을 가늠했음(정식 성적표는 아직 없음).</p>
+
+      <h4>문법</h4>
+      <p class="subject-note">아직 본격적으로 선행하지 않음. 여름방학 특강에서 총정리 예정.</p>
+    </article>
+
+    <article class="subject">
+      <div class="subject-head"><span class="initial">과</span><h3>과학</h3></div>
+
+      <h4>물리1</h4>
+      <div class="tag-list">
+        <span class="tag"><span class="dot progress" role="img" aria-label="진행중"></span>역학 · 기본 수준만</span>
+        <span class="tag"><span class="dot none" role="img" aria-label="미시작"></span>비역학 · 진로상 후순위</span>
+      </div>
+
+      <p class="subject-note">화학은 진로상 비중이 낮아 아직 구체적으로 진도를 나가지 않음. 물리2·화학2·생명1·2·지구과학1·2까지 나머지 7과목은 아직 시작 전.</p>
+    </article>
+
+  </section>
+
+  <section class="section" id="direction">
+    <h2>진로 방향</h2>
+    <p>아직 구체적으로 정해지진 않았지만, 물리·화학을 깊게 파고들 필요는 없는 이과 계열 방향을 생각하고 있음. 그래서 물리1은 역학 기본 정도만, 화학·물리2는 우선순위가 낮음.</p>
+  </section>
+
+  <section class="section" id="concerns">
+    <h2>지금 힘든 부분</h2>
+    <div class="callout">
+      <ul class="plain">
+        <li>미적분1 실전개념(Vision)이 아직 답답하게 느껴짐</li>
+        <li>공수1 심화는 생각보다 어려워서 계획대로 못 갔음</li>
+        <li>국어 비문학 지문에서 추론·근거 찾기가 약함</li>
+        <li>영어 단어는 복습이 없어서 외워도 금방 잊어버림</li>
+        <li>물리1은 선생님 설명은 좋은데 아직 이해가 잘 안 됨 — 속도나 방식이 안 맞는 것 같음</li>
+        <li>공통수학2에만 나오는 개념(원의 방정식, 명제 등)은 중학 과정에 없어서 새로 익혀야 함</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="plan">
+    <h2>앞으로 계획</h2>
+
+    <h3>~7/24까지 (D-16)</h3>
+    <ol class="plain">
+      <li>미적분1 실전개념(Vision) 끝내기</li>
+      <li>대수·공수 심화 문제풀이</li>
+      <li>수능 영단어 끝내기</li>
+      <li>문장 해석 독해 끝내기</li>
+      <li>국어 독해 — 고2 지문 (이원준T)</li>
+      <li>과학 — 별도 세부 계획 없음, 지금 하는 정도 유지</li>
+    </ol>
+
+    <h3>여름방학 특강</h3>
+    <ul class="plain">
+      <li>공수1·2 심화</li>
+      <li>영문법 총정리</li>
+    </ul>
+  </section>
+
+  <section class="section" id="glossary">
+    <h2>용어 설명</h2>
+    <dl class="glossary">
+      <dt>선행</dt><dd>현재 배우는 학년보다 앞선 내용을 미리 공부하는 것</dd>
+      <dt>내신</dt><dd>학교 시험(중간·기말고사) 성적</dd>
+      <dt>수능</dt><dd>대학수학능력시험</dd>
+      <dt>기본개념 / 실전개념</dt><dd>기본개념은 학원에서 배우는 교과서적인 기본 이론, 실전개념은 인강 등에서 배우는 실제 문제 풀이용 응용 이론</dd>
+      <dt>기본 / 응용 / 심화</dt><dd>같은 단원을 얼마나 깊이 있게 다뤘는지를 나타내는 단계</dd>
+      <dt>공통수학1·2 (공수1·2)</dt><dd>새 교육과정에서 고1 과정에 해당하는 수학 과목명</dd>
+      <dt>대수 / 미적분1·2 / 기하 / 확률과통계</dt><dd>고2 과정 및 선택과목. 미적분2·기하·확통 중 내신은 학교별로 선택하지만, 수능은 이 중 확률과통계로 응시 예정</dd>
+    </dl>
+  </section>
+
+  <footer>학습 상태를 스스로 정리한 개인 기록이며, 진행에 따라 계속 업데이트됩니다.</footer>
+
+</div>
+</body>
+</html>
