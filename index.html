@@ -111,6 +111,12 @@ ul.plain li,ol.plain li{margin-bottom:8px;}
 .callout ul{margin:0;padding-left:1.1em;}
 .callout li{margin-bottom:8px;}
 
+.week{margin-top:4px;}
+.week-row{display:flex;gap:14px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--border);}
+.week-row:last-child{border-bottom:none;}
+.week-day{width:24px;flex:none;font-weight:700;font-size:14px;padding-top:7px;}
+.week-row .tag-list{margin-top:0;}
+
 dl.glossary dt{font-weight:600;margin-top:14px;}
 dl.glossary dt:first-child{margin-top:0;}
 dl.glossary dd{margin:4px 0 0;color:var(--muted);font-size:14px;}
@@ -232,7 +238,7 @@ footer{color:var(--muted);font-size:12px;text-align:center;margin-top:40px;}
         <span class="node"></span>
         <div class="label">여름방학<span class="period">7/24~ 예정</span></div>
         <ul class="timeline-detail">
-          <li>여름방학 특강 — 공수1·2 심화, 영문법 총정리</li>
+          <li>콴다(수학) · 함영원(영어) · 다원 개인지도 시작 — 상세 시간표는 아래 참고</li>
         </ul>
       </li>
       <li class="future compact">
@@ -381,11 +387,65 @@ footer{color:var(--muted);font-size:12px;text-align:center;margin-top:40px;}
       <li>과학 — 별도 세부 계획 없음, 지금 하는 정도 유지</li>
     </ol>
 
-    <h3>여름방학 특강</h3>
+  </section>
+
+  <section class="section" id="schedule">
+    <h2>여름방학 시간표</h2>
+    <p class="subject-note">요일별 정규 수업 흐름. 정확한 시작일과 예외는 아래 참고.</p>
+
+    <div class="week">
+      <div class="week-row">
+        <div class="week-day">월</div>
+        <div class="tag-list"><span class="tag">09:30–16:00 · 콴다 · 미적블라+대수고쟁이</span></div>
+      </div>
+      <div class="week-row">
+        <div class="week-day">화</div>
+        <div class="tag-list"><span class="tag">09:30–16:00 · 콴다 · 미적블라+대수고쟁이</span></div>
+      </div>
+      <div class="week-row">
+        <div class="week-day">수</div>
+        <div class="tag-list">
+          <span class="tag">09:30–16:00 · 콴다 · 미적블라</span>
+          <span class="tag">19:30–22:00 · 다원 일대일 · 중2-2 에이급</span>
+        </div>
+      </div>
+      <div class="week-row">
+        <div class="week-day">목</div>
+        <div class="tag-list"><span class="tag">09:30–16:00 · 콴다 · 미적블라+대수고쟁이</span></div>
+      </div>
+      <div class="week-row">
+        <div class="week-day">금</div>
+        <div class="tag-list"><span class="tag">09:30–16:00 · 콴다 · 대수고쟁이</span></div>
+      </div>
+      <div class="week-row">
+        <div class="week-day">토</div>
+        <div class="tag-list"><span class="tag">09:00–13:00 · 함영원 · 중등영문법총정리</span></div>
+      </div>
+      <div class="week-row">
+        <div class="week-day">일</div>
+        <div class="tag-list"><span class="tag">10:00–13:00 · 다원 일대일 · 공수1·2</span></div>
+      </div>
+    </div>
+
+    <h3>상시 자습 (고정 시간표 없음)</h3>
     <ul class="plain">
-      <li>공수1·2 심화</li>
-      <li>영문법 총정리</li>
+      <li>수학 — 공수1·2: 현우진 시발점</li>
+      <li>영어 — 경선식 수능영단어, 구문독해</li>
+      <li>국어 — 개화 국어 수능적 직관 → 이원준T 브크(C+RNP)</li>
+      <li>과학 — 물리1(메카니카), 화학1(그릿)</li>
     </ul>
+
+    <h3>시작일 · 확인 필요</h3>
+    <div class="callout">
+      <ul class="plain">
+        <li>7/24(금) ~ 7/26(일) — 수련회 기간, 이 기간 모든 학원 일정 제외</li>
+        <li>대수고쟁이(콴다) 시작일이 7/24(금)로 되어 있는데, 같은 날 콴다 휴강 + 수련회 기간과 겹침 — 실제 시작일 확인 필요</li>
+        <li>함영원 영어 시작일이 7/25(토)로 되어 있는데, 수련회 기간(7/24~7/26)과 겹침 — 실제 시작일 확인 필요</li>
+        <li>미적블라(콴다) — 7/23(목) 시작</li>
+        <li>다원 일대일(수요일 · 중2-2 에이급) — 7/22~8/19, 총 5회</li>
+        <li>다원 일대일(일요일 · 공수1·2) — 8/2~8/23, 총 4회 · 8/9는 빠질 수 있음</li>
+      </ul>
+    </div>
   </section>
 
   <section class="section" id="glossary">
